@@ -2,7 +2,7 @@ from http import client
 from json.tool import main
 
 import emoji
-import pymongo
+
 import requests
 from loguru import logger
 from markupsafe import Markup
@@ -11,6 +11,7 @@ from src.bot import bot
 from src.constants import keyboards, keys, states
 from src.filters import IsAdmin
 from src.utils.io import write_json
+from src.db import db
 
 
 class Bot:
@@ -18,18 +19,14 @@ class Bot:
         Template Bot to connect two strangers randomly.
         """
         
-        def __init__(self, telebot):
+        def __init__(self, telebot, mongodb):
                 """
                 Initial bot, database, states, filters and handlers
-
-                :param telebot: _description_
-                :type telebot: _type_
                 """                
 
                 self.bot = telebot
 
-                client = pymongo.MongoClient("localhost", 27017)
-                self.db = client.nashenas_telegram_bot
+                self.db = mongodb
 
                 #register handlers
                 self.handlers()
@@ -184,4 +181,4 @@ class Bot:
 
 if __name__ == "__main__":
         logger.info("Bot has been started!")
-        nashenas_bot = Bot(telebot=bot)
+        nashenas_bot = Bot(telebot=bot, mongodb=db)
