@@ -41,8 +41,11 @@ class Bot:
 
                 logger.info("Sending <bot activated> message to all users")
                 users = self.db.users.find({})
-                for user in users:
-                        self.bot.send_message(user['chat']['id'], f"Bot activated at {current_time}")
+                if not users:
+                        logger.info("No users found")
+                else:
+                        for user in users:
+                                 self.send_message(user['chat']['id'], f"{current_time}\n:rocket:ربات هم اکنون فعال شد...  ")
 
                 #start bot
                 logger.info("Bot is running")
@@ -72,7 +75,7 @@ class Bot:
                         Randomly connect to another user.
                         """                        
                         self.send_message(message.chat.id, 
-                        "  در حال اتصال شما به یک کاربر ناشناس (در حال حاضر فقط می توانید متن یا ایموجی ارسال کنید)...:link: ",
+                        "  در حال اتصال شما به یک کاربر ناشناس...:link:\n (در حال حاضر فقط می توانید متن یا ایموجی ارسال کنید) ",
                          reply_markup=keyboards.discard
                         )
                         self.update_state(message.chat.id, states.random_connect)
@@ -147,6 +150,30 @@ class Bot:
                                 {'chat.id':message.chat.id},
                                 {'$set':{'connected_to':None}}
                         )
+
+                @self.bot.message_handler(regexp=emoji.emojize(keys.faal))
+                def start(message):
+                        """
+                        take a faal for the user
+                        """         
+                        def make_beauty(rhyme):
+                                res = ''
+                                rhyme = rhyme.split('\n')
+                                counter = 0
+                                for line in rhyme:
+                                        res = res + '\n' + line 
+                                        counter +=1
+                                        if counter == 2:
+                                                counter = 0
+                                                res += '\n'
+                                return res
+                        BASE_URL = 'https://one-api.ir/hafez/?token=946518:6216a532d23ae8.08076926'
+                        response = requests.get(f"{BASE_URL}")
+                        faal_text = make_beauty(response.json()['result']['RHYME'])
+                        self.send_message(message.chat.id ,f"‍‍‍‍‍‍─┅━━━━┅─فال─┅━━━━┅─\n {faal_text}\n ─┅━━━━┅─تعبیر─┅━━━━┅─\n {response.json()['result']['MEANING']}\n ")
+
+
+
 
                 @self.bot.message_handler(func=lambda _: True)
                 def echo (message):
