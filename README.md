@@ -10,7 +10,7 @@ First in main rep directory, run the following code to add src to your PYTHONPAT
 
 Second add you bot's token as below(you can get that from `@BotFather` in Telegram):
 
-`export anonymous_telebot_token={your token}`
+`export anonymous_telebot_token={<<your token>>}`
 
 finally run :
 
