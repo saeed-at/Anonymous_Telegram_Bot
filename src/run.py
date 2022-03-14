@@ -12,6 +12,7 @@ from src.constants import keyboards, keys, states
 from src.filters import IsAdmin
 from src.utils.io import write_json
 from src.db import db
+from datetime import datetime
 
 
 class Bot:
@@ -33,6 +34,15 @@ class Bot:
 
                 #ass custom filter
                 self.bot.add_custom_filter(IsAdmin())
+
+                #send activated message to users and time
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")     
+
+                logger.info("Sending <bot activated> message to all users")
+                users = self.db.users.find({})
+                for user in users:
+                        self.bot.send_message(user['chat']['id'], f"Bot activated at {current_time}")
 
                 #start bot
                 logger.info("Bot is running")
