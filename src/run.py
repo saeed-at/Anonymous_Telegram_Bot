@@ -1,11 +1,7 @@
-from http import client
-from json.tool import main
-
 import emoji
 
 import requests
 from loguru import logger
-from markupsafe import Markup
 
 from src.bot import bot
 from src.constants import keyboards, keys, states
